@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "SwasthAI & DAT Transactions & Rewards API"
+    PROJECT_NAME: str = "AlphaPay Transactions & Rewards API"
     API_V1_STR: str = "/api/v1"
     
     # Database URL defaults to local postgres or can be overridden via env variable
