@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* ==========================================================================
    DIGITAL ALPHA TECHNOLOGY - DESIGN SYSTEM TOKENS & CORE STYLES
    ========================================================================== */
@@ -80,8 +84,6 @@
 
 *, *::before, *::after {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 html {
