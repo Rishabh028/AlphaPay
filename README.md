@@ -129,8 +129,27 @@ pytest tests -v
 - [x] **Optimistic UI with Clean Rollback**: Instant balance updates with revert and alert banner on backend rejection.
 - [x] **Hand-Built Accessible Modal & Drawer**: Focus trap, keyboard `Escape` dismissal, backdrop click handlers, `aria-modal="true"`.
 - [x] **PostgreSQL Schema & One-Command Seed**: `schema.sql` with indexes + `seed.py` ingests all 10k rows in ~4 seconds handling 5 timestamp formats, duplicate ID collisions, missing category imputation, and string amount casting.
-- [x] **Cloud Deployment Artifacts**: `render.yaml` (Render blueprint), `backend/Dockerfile`, `backend/Procfile`, `frontend/vercel.json`, and [`DEPLOYMENT.md`](./DEPLOYMENT.md).
+- [x] **Cloud Deployment**: Live Next.js frontend on Vercel, FastAPI on Render, and PostgreSQL on Neon.
 - [x] **100% Passing Automated Tests**: 18 pytest tests.
+
+---
+
+## 🚫 What's Not Done / Intentionally Out of Scope
+
+In accordance with the 24-hour scope and brief instructions (*"Depth beats breadth here. A tight scope done really well is a stronger submission"*):
+
+1. **Multi-User Authentication & Tenant Isolation**:
+   - The application is intentionally designed as a focused single-user financial dashboard for the provided 10k dataset. In a full production banking app, OAuth2/JWT authentication with PostgreSQL Row-Level Security (RLS) would isolate multi-tenant user accounts.
+2. **Live Payment Gateway Processing**:
+   - Simulated instant bill settlement and voucher generation rather than connecting live Razorpay/Stripe webhooks.
+3. **Optional Demo Video**:
+   - Omitted since both frontend and backend are 100% deployed and live in the cloud ([Vercel](https://alphapay-hazel.vercel.app) + [Render](https://alphapay-backend.onrender.com/docs) + [Neon](https://neon.tech)).
+
+---
+
+## ⚠️ Known Operational Considerations
+
+- **Render Free Tier Cold Starts**: Render's free web service spins down after 15 minutes of inactivity. The very first request after sleep may take ~30–45 seconds to wake up (handled gracefully in the UI with loading skeletons and retry actions).
 
 ---
 
