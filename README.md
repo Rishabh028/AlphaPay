@@ -10,9 +10,9 @@ A consumer financial dashboard for credit-card bill payments where users can vie
 
 | Service | Host | Status / URL |
 | :--- | :--- | :--- |
-| **Frontend Web App** | Vercel | [Live App](https://alphapay.vercel.app) *(or connect via [DEPLOYMENT.md](./DEPLOYMENT.md))* |
-| **Backend API & Swagger** | Render / Railway | [API Docs (`/docs`)](https://alphapay-backend.onrender.com/docs) |
-| **PostgreSQL Database** | Neon / Supabase | PostgreSQL 16+ / 18 Managed Instance (10k seeded rows) |
+| **Frontend Web App** | Vercel | [Live App (alphapay-hazel.vercel.app)](https://alphapay-hazel.vercel.app) |
+| **Backend API & Swagger** | Render | [API Docs (`/docs`)](https://alphapay-backend.onrender.com/docs) • [Health Check](https://alphapay-backend.onrender.com/api/v1/health) |
+| **PostgreSQL Database** | Neon Serverless | PostgreSQL 16+ / 18 Instance (**10,000 seeded transactions**) |
 | **Complete Deployment Guide** | Multi-Cloud | [DEPLOYMENT.md](./DEPLOYMENT.md) |
 
 ---
