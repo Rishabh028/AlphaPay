@@ -1,0 +1,24 @@
+services:
+  # Python FastAPI Backend Web Service
+  - type: web
+    name: alphapay-backend
+    runtime: python
+    region: oregon
+    plan: free
+    buildCommand: "pip install -r backend/requirements.txt && python backend/db/seed.py"
+    startCommand: "cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: DATABASE_URL
+        fromDatabase:
+          name: alphapay-postgres
+          property: connectionString
+
+databases:
+  # Managed PostgreSQL Database
+  - name: alphapay-postgres
+    region: oregon
+    plan: free
+    databaseName: dat_db
+    user: postgres

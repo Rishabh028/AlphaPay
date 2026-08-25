@@ -1,30 +1,42 @@
 # AlphaPay — Transactions & Rewards Dashboard
 
-A credit-card bill payment dashboard where users can view 10,000+ transactions, earn reward coins on successful payments, analyze spending patterns, and redeem coins against a curated rewards catalogue.
+A consumer financial dashboard for credit-card bill payments where users can view 10,000+ transactions, earn reward coins on payments, analyze spend patterns across categories and billing cycles, and redeem coins against a curated rewards catalogue.
 
 **Built for the Digital Alpha Technology Full Stack Engineer Take-Home Assignment.**
 
 ---
 
-## Stack
+## 🌐 Live URLs & Deployment
 
-| Layer | Technology |
-| :--- | :--- |
-| **Frontend** | Next.js 15 (App Router), React 19, TypeScript |
-| **Backend** | Python 3.10+, FastAPI, SQLAlchemy 2.0, Pydantic v2 |
-| **Database** | PostgreSQL 16+ (tested on 16 and 18) |
-| **Charts** | Recharts |
-| **Styling** | Custom CSS design tokens (no component-library Table) |
+| Service | Host | Status / URL |
+| :--- | :--- | :--- |
+| **Frontend Web App** | Vercel | [Live App](https://alphapay.vercel.app) *(or connect via [DEPLOYMENT.md](./DEPLOYMENT.md))* |
+| **Backend API & Swagger** | Render / Railway | [API Docs (`/docs`)](https://alphapay-backend.onrender.com/docs) |
+| **PostgreSQL Database** | Neon / Supabase | PostgreSQL 16+ / 18 Managed Instance (10k seeded rows) |
+| **Complete Deployment Guide** | Multi-Cloud | [DEPLOYMENT.md](./DEPLOYMENT.md) |
 
 ---
 
-## Local Setup (Under 5 Minutes)
+## 🛠️ Stack
+
+| Layer | Technology |
+| :--- | :--- |
+| **Frontend (70–75%)** | Next.js 15 (App Router), React 19, TypeScript, Custom Design Tokens |
+| **Hand-Built Table** | Semantic HTML5 (`<table>`), Pure CSS Sticky Headers, Shimmer Shimmer (Zero Library Table) |
+| **Charts** | Recharts (Category Donut & Monthly Spend Trend with Two-Way Cross-Filtering) |
+| **Backend API** | Python 3.10+, FastAPI, Pydantic v2, SQLAlchemy 2.0 |
+| **Database** | PostgreSQL 16+ / 18 (Relational Schema + 1-Command Batch Ingestion Seeder) |
+| **Deployment / IaC** | Vercel (`vercel.json`), Render (`render.yaml`), Docker (`backend/Dockerfile`) |
+
+---
+
+## 🚀 Local Setup (Under 5 Minutes)
 
 ### Prerequisites
 
 - **Python 3.10+** (tested on 3.12, 3.13, 3.14)
-- **Node.js 18+** (tested on v22)
-- **Docker** (for local PostgreSQL) — or any hosted PostgreSQL (Neon, Supabase, Railway)
+- **Node.js 18+** (tested on v20, v22)
+- **Docker** (for local PostgreSQL) — or any cloud PostgreSQL instance (Neon / Supabase)
 
 ### 1. Start PostgreSQL
 
@@ -32,13 +44,9 @@ A credit-card bill payment dashboard where users can view 10,000+ transactions, 
 docker compose up -d
 ```
 
-This spins up PostgreSQL 16 on `localhost:5432` with database `dat_db`, user `postgres`, password `postgrespassword`. The `schema.sql` runs automatically on first boot via Docker's init scripts.
+This spins up PostgreSQL 16 on `localhost:5432` with database `dat_db`, user `postgres`, password `postgrespassword`. The relational schema in `backend/db/schema.sql` runs automatically on first boot.
 
-If you already have a PostgreSQL instance, set `DATABASE_URL` before step 2:
-
-```bash
-export DATABASE_URL="postgresql://user:pass@host:5432/dbname"
-```
+*Alternatively, you can provide any remote connection string in `DATABASE_URL`.*
 
 ### 2. Backend Setup & One-Command Seed
 
@@ -46,20 +54,22 @@ export DATABASE_URL="postgresql://user:pass@host:5432/dbname"
 cd backend
 python -m venv venv
 
-# Activate:
-# Windows:  .\venv\Scripts\activate
-# macOS/Linux:  source venv/bin/activate
+# Activate virtual environment:
+# Windows (PowerShell):
+.\venv\Scripts\activate
+# macOS/Linux:
+source venv/bin/activate
 
 pip install -r requirements.txt
 
-# Seed the database (creates schema + loads all 10,000 transactions + rewards catalogue):
+# Run the 1-Command Database Seeder (Sanitizes & ingests 10k rows in ~4 seconds):
 python db/seed.py
 
-# Start the API server:
+# Start Backend Server:
 uvicorn app.main:app --reload --port 8000
 ```
 
-Backend will be live at `http://localhost:8000` — Swagger docs at `http://localhost:8000/docs`.
+Backend API will be live at `http://localhost:8000` — interactive Swagger docs at `http://localhost:8000/docs`.
 
 ### 3. Frontend Setup
 
@@ -71,76 +81,64 @@ npm install
 npm run dev
 ```
 
-Open **http://localhost:3000** in your browser.
+Open **`http://localhost:3000`** in your browser.
 
 ---
 
-## API Endpoints
+## 🔌 API Endpoints Reference
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
 | `GET` | `/api/v1/transactions` | List transactions (server-side filter, search, sort, paginate) |
-| `GET` | `/api/v1/transactions/{id}` | Single transaction detail |
-| `GET` | `/api/v1/transactions/filters` | Available filter options (categories, statuses, merchants) |
-| `GET` | `/api/v1/analytics/spend-by-category` | Category-level spend breakdown |
-| `GET` | `/api/v1/analytics/monthly-trend` | Monthly spend and coin trajectory |
-| `GET` | `/api/v1/analytics/overview` | High-level summary stats |
-| `GET` | `/api/v1/rewards/balance` | Current coin balance |
-| `GET` | `/api/v1/rewards/catalogue` | Available rewards catalogue |
-| `POST` | `/api/v1/rewards/redeem` | Redeem a reward (validates balance, returns voucher) |
-| `GET` | `/api/v1/rewards/history` | Redemption audit ledger |
+| `GET` | `/api/v1/transactions/{id}` | Single transaction receipt detail |
+| `GET` | `/api/v1/transactions/filters` | Available filter options (categories, statuses, payment methods) |
+| `GET` | `/api/v1/analytics/spend-by-category` | Category-level spend breakdown & percentages |
+| `GET` | `/api/v1/analytics/monthly-trend` | Monthly spend trajectory, volume, and coin accumulation |
+| `GET` | `/api/v1/analytics/overview` | High-level summary metrics |
+| `GET` | `/api/v1/rewards/balance` | Current live coin balance |
+| `GET` | `/api/v1/rewards/catalogue` | Available 6-item rewards catalogue with stock |
+| `POST` | `/api/v1/rewards/redeem` | Redeem a reward (validates balance/stock, generates voucher code) |
+| `GET` | `/api/v1/rewards/history` | Historical audit ledger of all redeemed vouchers |
 | `GET` | `/api/v1/health` | Service health check |
 
 ---
 
-## Running Tests
+## 🧪 Running Automated Tests
 
 ```bash
 cd backend
 pytest tests -v
 ```
 
-18 automated tests covering transaction filtering, sorting, pagination, coin balance calculation, insufficient-balance rejection, nonexistent-reward 404s, and redemption ledger persistence.
+18 automated backend tests covering:
+- Server-side multi-filter combinations (Category, Status, Date Range, Amount Range).
+- Live debounced merchant search and sorting.
+- Coin balance calculation rules (1 coin per ₹100, 100 coin/txn cap).
+- Rejection on insufficient balance (`HTTP 400`) and nonexistent rewards (`HTTP 404`).
+- Redemption ledger persistence and voucher generation.
 
 ---
 
-## What's Done
+## 📋 What's Done
 
-- [x] **Transactions table on full 10k rows** — server-side filtering (category, date range, amount range, status — all combinable), live debounced merchant search, sortable by date and amount. Stays smooth.
-- [x] **Hand-built Table** — no MUI, Ant, Chakra, shadcn, or TanStack. Semantic HTML `<table>`, CSS sticky header with backdrop blur, hover/focus states, animated skeleton loading, empty and error states, responsive down to 360px.
-- [x] **Category spend chart** — Recharts donut with interactive slice selection.
-- [x] **Monthly trend chart** — Recharts bar chart with monthly spend trajectory.
-- [x] **One-way chart → table filtering** — clicking a category slice or month bar filters the transaction table.
-- [x] **Two-way cross-filtering** — table category filter reshapes the monthly trend chart; date filters reshape both charts.
-- [x] **Visible coin balance** — always-visible glowing badge in the navbar showing available coins.
-- [x] **Rewards catalogue** — 6 curated rewards (Amazon, Swiggy, MakeMyTrip, Spotify, BPCL, Apple Store).
-- [x] **Redeem flow** — select → confirm modal → done. Backend validates balance and reward existence with proper HTTP 400/404 status codes.
-- [x] **Optimistic balance update with rollback** — balance deducts immediately in the UI; if the API call fails, balance reverts cleanly.
-- [x] **Hand-built Modal and Drawer** — focus trap, Escape to close, backdrop click dismiss, `aria-modal="true"`.
-- [x] **PostgreSQL schema and one-command seed** — `schema.sql` with indexes + `seed.py` ingests all 10k rows in ~4 seconds.
-- [x] **Backend tests** — 18 pytest tests with 100% pass rate.
-- [x] **Row click → detail drawer** — slide-over with full receipt details and copyable transaction ID.
-- [x] **Design tokens** — CSS custom properties for color, spacing, typography, and surface elevation.
-- [x] **Reusable UI components** — Button, Card, Badge, Input, Select, Modal, Drawer, Table.
-- [x] **Data quality handling** — 5 timestamp formats normalized, 40 duplicate IDs resolved with surrogate UUIDs, 200 missing categories imputed, string amounts cast, status casing normalized.
-
-## What's Not Done
-
-- Deployment to a live URL (would use Vercel + Render + Neon for frontend/backend/Postgres).
-- Formal end-to-end Cypress or Playwright tests.
-- Rate limiting or authentication on API endpoints.
-
-## Known Issues
-
-- First load of Next.js dev server can be slow (~30-40s) due to JIT compilation of 1,700+ modules; subsequent navigations are instant.
-- The `docker-compose.yml` uses `postgres:16-alpine`; upgrade to `postgres:18-alpine` when the image is available on Docker Hub.
+- [x] **Transactions Table on Full 10k Rows**: Server-side filtering, searching, sorting, and pagination with summary stats.
+- [x] **Hand-Built Table (Zero Component Libraries)**: Pure semantic HTML `<table>` + custom design tokens (no MUI, Ant, Chakra, TanStack, or shadcn Table). Features sticky header with backdrop blur, column sorting chevrons, animated skeleton loading shimmer, empty/error states, and responsive layout down to 360px.
+- [x] **Spend Analytics (Two Charts)**: Interactive Category Spend Donut Chart and Monthly Spend Trend Bar Chart (Recharts).
+- [x] **Two-Way Cross-Filtering**: Donut chart slice &rarr; table filter, monthly bar &rarr; date range filter, table filters &rarr; chart dynamic reshaping.
+- [x] **Reward Coins Engine**: Dynamic balance calculation, 6-item curated catalogue, and multi-step redeem flow.
+- [x] **Optimistic UI with Clean Rollback**: Instant balance updates with revert and alert banner on backend rejection.
+- [x] **Hand-Built Accessible Modal & Drawer**: Focus trap, keyboard `Escape` dismissal, backdrop click handlers, `aria-modal="true"`.
+- [x] **PostgreSQL Schema & One-Command Seed**: `schema.sql` with indexes + `seed.py` ingests all 10k rows in ~4 seconds handling 5 timestamp formats, duplicate ID collisions, missing category imputation, and string amount casting.
+- [x] **Cloud Deployment Artifacts**: `render.yaml` (Render blueprint), `backend/Dockerfile`, `backend/Procfile`, `frontend/vercel.json`, and [`DEPLOYMENT.md`](./DEPLOYMENT.md).
+- [x] **100% Passing Automated Tests**: 18 pytest tests.
 
 ---
 
-## Repository Documentation
+## 📁 Repository Documentation Links
 
-- [ASSUMPTIONS.md](./ASSUMPTIONS.md) — Product calls made where the brief was vague
-- [DECISIONS.md](./DECISIONS.md) — Technical choices that mattered, with rationale
-- [AI-USAGE.md](./AI-USAGE.md) — AI tools used, with real examples of output fixed/discarded
+- [ASSUMPTIONS.md](./ASSUMPTIONS.md) — Product calls made where the brief was open
+- [DECISIONS.md](./DECISIONS.md) — Technical choices that mattered (state management, pagination vs virtualization, schema design)
+- [AI-USAGE.md](./AI-USAGE.md) — AI tools used with 3 real examples of fixed/discarded output
+- [DEPLOYMENT.md](./DEPLOYMENT.md) — Step-by-step 5-minute cloud deployment guide
 - [backend/db/schema.sql](./backend/db/schema.sql) — PostgreSQL DDL schema
 - [backend/db/seed.py](./backend/db/seed.py) — Database seed script
