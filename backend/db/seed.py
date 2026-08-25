@@ -12,6 +12,7 @@ import dateutil.parser
 # Add parent directory to sys.path to import backend modules
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from sqlalchemy import insert
 from app.core.database import engine, Base, SessionLocal
 from app.core.config import settings
 from app.models.transaction import Transaction
@@ -321,14 +322,14 @@ def seed_database():
             })
 
         # 4. High-performance batch insertion
-        print("\n[4/4] Inserting sanitized records into Database...")
+        print("\n[4/4] Inserting sanitized records into Database...", flush=True)
         batch_size = 1000
         total_records = len(sanitized_transactions)
         for i in range(0, total_records, batch_size):
             batch = sanitized_transactions[i:i + batch_size]
-            db.bulk_insert_mappings(Transaction, batch)
+            db.execute(insert(Transaction).values(batch))
             db.commit()
-            print(f"  -> Ingested {min(i + batch_size, total_records):,}/{total_records:,} rows...")
+            print(f"  -> Ingested {min(i + batch_size, total_records):,}/{total_records:,} rows...", flush=True)
 
         duration = time.time() - start_time
         print("\n" + "=" * 60)
