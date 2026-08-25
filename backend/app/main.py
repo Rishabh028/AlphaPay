@@ -46,8 +46,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include v1 router
+# Include v1 router under /api/v1 and fallback root prefix
 app.include_router(api_router, prefix=settings.API_V1_STR)
+app.include_router(api_router, prefix="")
 
 
 @app.get("/", include_in_schema=False)
