@@ -12,7 +12,16 @@ import {
   FilterState,
 } from "@/types";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api/v1";
+function getApiBase(): string {
+  let base = (process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api/v1").trim();
+  base = base.replace(/\/+$/, "");
+  if (!base.endsWith("/api/v1")) {
+    base = `${base}/api/v1`;
+  }
+  return base;
+}
+
+const API_BASE = getApiBase();
 
 async function fetchJSON<T>(url: string, options?: RequestInit): Promise<T> {
   const res = await fetch(url, {
