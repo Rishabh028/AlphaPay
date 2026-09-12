@@ -1,5 +1,5 @@
 # AlphaPay — Transactions & Rewards Dashboard
-
+ 
 A consumer financial dashboard for credit-card bill payments where users can view 10,000+ transactions, earn reward coins on payments, analyze spend patterns across categories and billing cycles, and redeem coins against a curated rewards catalogue.
 
 **Built for the Digital Alpha Technology Full Stack Engineer Take-Home Assignment.**
