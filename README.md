@@ -4,7 +4,7 @@ A consumer financial dashboard for credit-card bill payments where users can vie
 
 **Built for the Digital Alpha Technology Full Stack Engineer Take-Home Assignment.**
 
---- 
+---  
 
 ## 🌐 Live URLs & Deployment
 
